@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QuickTube</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   </head>
   <body>
     <div style="width: 300px; text-align: center;">
@@ -15,13 +16,14 @@
 
       <h3>Amount of sentences</h3>
 
-      <input type="range" max=30 min=5></input>
+      <input id="sentences" type="range" max=30 min=5 value="15"></input>
+      <p id="sentenceValue">15</p>
 
       <br/>
 
       <button id="summarize">Summarize</button>
-
-      <script src="popupscript.js"></script>
+    
+      <script src="popupscript.js"></script> 
     </div>
 
   </body>
