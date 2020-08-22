@@ -3,9 +3,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
   chrome.tabs.sendMessage(tabs[0].id, { type: "getTitle" }, function (
     response
   ) {
-    document.getElementsByClassName("currentvideo")[0].innerHTML += response.title;
+
+    if (response.url.includes("https://www.youtube.com/watch?v=")) {
+      document.getElementsByClassName("currentvideo")[0].innerHTML += response.title;
     
-    if (response.transcript === false) {
+      if (response.transcript === false) {
         //removing functionality if transcript doesnt exist
         document.getElementById("sentences").remove();
         document.getElementById("summarize").remove();
@@ -13,6 +15,9 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
 
         //displaying error message
         document.getElementById("sentenceAmount").innerHTML = "TRANSCRIPT UNAVAILABLE"
+    }
+    } else {
+        document.getElementById("main").innerHTML = "<h1>QuickTube</h1>" + "<h3>Please Navigate to a Youtube Video</h3>"
     }
 
   });

@@ -11,6 +11,8 @@ var trans;
 
 //checking if video has a valid transcript
 transcript = async() => {
+
+  if (location.href.includes("https://www.youtube.com/watch?v=")){
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
     if (xhttp.readyState == XMLHttpRequest.DONE) {
@@ -20,25 +22,22 @@ transcript = async() => {
     let link = "https://video.google.com/timedtext?lang=en&v=" + location.href.split("=")[1]
     await xhttp.open('GET', link);
     xhttp.send(null)
+  }
 }
 
 transcript()
-
-//if url change must check for transcript again
-chrome.runtime.onMessage.addListener(function(message,sender,sendResponse){
-  switch (message.type) {
-    case "updateTranscript":
-      transcript()
-      break;
-  }  
-})
 
 //sends title back to popup
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   switch (message.type) {
     case "getTitle":
-      let ans = {title: title(), transcript: trans}
+      let url = location.href;
+      let ans = {title: title(), transcript: trans, url:url}
       sendResponse(ans);
+      break;
+    case "updateTranscript":
+      //if url change must check for transcript again
+      transcript()
       break;
     default:
       console.error("Unrecognised message: ", message);
