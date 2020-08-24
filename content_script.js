@@ -26,7 +26,6 @@ transcript = async() => {
 }
 
 transcript()
-
 //sends title back to popup
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   switch (message.type) {

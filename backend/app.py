@@ -25,7 +25,7 @@ class Summarize():
 
 
 @app.route('/')
-@cross_origin(origin='*',headers=['Content-Type','Authorization'])
+@cross_origin()
 def index():
     return "Backend Status: Running"
 

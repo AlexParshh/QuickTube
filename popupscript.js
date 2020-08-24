@@ -1,12 +1,9 @@
 //when popup loads it sends message to content script to fetch video title
-chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-  chrome.tabs.sendMessage(tabs[0].id, { type: "getTitle" }, function (
-    response
-  ) {
-
-    if (response.url.includes("https://www.youtube.com/watch?v=")) {
+chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
+  if (tabs[0].url.includes("https://www.youtube.com/watch?v=")) {
+    chrome.tabs.sendMessage(tabs[0].id, {type:"getTitle"}, function (response) {
       document.getElementsByClassName("currentvideo")[0].innerHTML += response.title;
-    
+
       if (response.transcript === false) {
         //removing functionality if transcript doesnt exist
         document.getElementById("sentences").remove();
@@ -16,12 +13,12 @@ chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         //displaying error message
         document.getElementById("sentenceAmount").innerHTML = "TRANSCRIPT UNAVAILABLE"
     }
-    } else {
-        document.getElementById("main").innerHTML = "<h1>QuickTube</h1>" + "<h3>Please Navigate to a Youtube Video</h3>"
-    }
 
-  });
-});
+    })
+  } else {
+    document.getElementById("main").innerHTML = "<h1>QuickTube</h1>" + "<h3>Please Navigate to a Youtube Video</h3>"
+  }
+})
 
 
 var slider = document.getElementById("sentences")
