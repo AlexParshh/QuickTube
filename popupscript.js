@@ -37,6 +37,13 @@ slider.onchange = function(event){
 sendInfo = async (data) => {
     result = await axios.post("http://localhost:5000/summarize",data).then(response=>{
         console.log(response);
+        let result = response.data.summary;
+        document.getElementById("summarizedText").innerHTML = result;
+
+        chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
+          chrome.tabs.sendMessage(tabs[0].id, {type:"getSummary", summary:result})
+        })
+
     })
 }
 
@@ -55,7 +62,7 @@ document.getElementById("summarize").addEventListener("click", function () {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     let sentences = parseInt(slider.value);
     sentences = reverser(sentences)
-    
+
     console.log({url:tabs[0].url,sentences:sentences});
     let info = {url:tabs[0].url,sentences:sentences};
     sendInfo(info)
