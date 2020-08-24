@@ -2,6 +2,8 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import nltk
 import re
 import string
+import pycurl
+from io import BytesIO
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize, sent_tokenize
@@ -22,11 +24,32 @@ class Summarize():
             text += (i['text']+" ")
 
         text = text.replace("\n", " ")
+        text = text.replace("[","")
+        text = text.replace("]", "")
         text = re.sub(r'\([^)]*\)', '', text)
         text = text.replace("  ", " ")
         text = text.lower()
 
         self.text = text
+
+    def punctuateText(self):
+        #checks if text is properlly punctuated, if not sends a request to neureal net api that returns punctuated text
+        if len(sent_tokenize(self.text)) < (len(self.text)//100):
+            #formula that checks if transcript is properlly punctuated, no run on sentences, if average sentence is 100 chars
+            punctURL = "http://bark.phon.ioc.ee/punctuator"
+            c = pycurl.Curl()
+            c.setopt(c.URL, punctURL)
+            postfields = "text="+self.text
+            b = BytesIO()
+            c.setopt(c.POSTFIELDS, postfields)
+            c.setopt(c.WRITEDATA,b)
+            c.perform()
+            c.close()
+            res = str(b.getvalue())
+            res = res[2:-2]
+            res = res.replace("..",".")
+            res = res.replace(".,", ",")
+            self.text = res
 
 
     def createFreqTable(self, text_string):
@@ -50,6 +73,7 @@ class Summarize():
 
     def setSentences(self,text):
         self.sentences = sent_tokenize(text)
+        self.sentences = [i for i in self.sentences if len(i)>=10]
 
     def scoreSentences(self, sentences, freqTable):
 

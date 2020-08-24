@@ -27,6 +27,7 @@ def summarize():
         a = Summarize(url,sentences)
         a.getTranscript()
         a.cleanTranscript()
+        a.punctuateText()
         a.createFreqTable(a.text)
         a.setSentences(a.text)
         a.scoreSentences(a.sentences,a.freqTable)
