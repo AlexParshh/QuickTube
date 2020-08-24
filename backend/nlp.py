@@ -7,89 +7,99 @@ from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize, sent_tokenize
 nltk.download('punkt')
 
+class Summarize():
+    def __init__(self,url,sentences):
+        self.url = url
+        self.sentences = sentences
 
-transcript = YouTubeTranscriptApi.get_transcript("6Af6b_wyiwI")
+    def getTranscript(self):
+        self.transcript = YouTubeTranscriptApi.get_transcript(self.url)
 
-def cleanTranscript(trans):
-    text = ""
+    def cleanTranscript(self):
+        text = ""
 
-    for i in trans:
-        text += i['text']
+        for i in self.transcript:
+            text += i['text']
 
-    text = text.replace(".", ". ")
-    text = text.replace(",", ", ")
-    text = text.replace("\n", " ")
-    text = re.sub(r'\([^)]*\)', '', text)
-    text = text.lower()
+        text = text.replace(".", ". ")
+        text = text.replace(",", ", ")
+        text = text.replace("\n", " ")
+        text = re.sub(r'\([^)]*\)', '', text)
+        text = text.lower()
 
-    return text
-
-
-def createFreqTable(text_string):
-
-    stopWords = set(stopwords.words("english") + list(string.punctuation))
-    words = nltk.word_tokenize(text_string)
-    ps = PorterStemmer()
-
-    freqTable = dict()
-
-    for word in words:
-        word = ps.stem(word)
-        if word in stopWords:
-            continue
-        if word in freqTable:
-            freqTable[word] += 1
-        else:
-            freqTable[word] = 1
-
-    return freqTable
+        self.text = text
 
 
-text = cleanTranscript(transcript)
+    def createFreqTable(self, text_string):
 
-freqTable = createFreqTable(text)
+        stopWords = set(stopwords.words("english") + list(string.punctuation))
+        words = nltk.word_tokenize(text_string)
+        ps = PorterStemmer()
 
-sentences = sent_tokenize(text)
+        freqTable = dict()
 
-def scoreSentences(sentences, freqTable):
+        for word in words:
+            word = ps.stem(word)
+            if word in stopWords:
+                continue
+            if word in freqTable:
+                freqTable[word] += 1
+            else:
+                freqTable[word] = 1
 
-    sentenceValue = dict()
+        self.freqTable = freqTable
 
-    for sentence in sentences:
-        word_count_in_sentence = len(word_tokenize(sentence))
-        for wordValue in freqTable:
-            if wordValue in sentence:
-                if sentence[:10] in sentenceValue:
-                    sentenceValue[sentence[:10]] += freqTable[wordValue]
-                else:
-                    sentenceValue[sentence[:10]] = freqTable[wordValue]
+    def setSentences(self,text):
+        self.sentences = sent_tokenize(text)
 
-        sentenceValue[sentence[:10]] = sentenceValue[sentence[:10]] / word_count_in_sentence
+    def scoreSentences(self, sentences, freqTable):
 
-    return sentenceValue
+        sentenceValue = dict()
 
-sentenceScores = scoreSentences(sentences,freqTable)
+        for sentence in sentences:
+            word_count_in_sentence = len(word_tokenize(sentence))
+            for wordValue in freqTable:
+                if wordValue in sentence:
+                    if sentence[:10] in sentenceValue:
+                        sentenceValue[sentence[:10]] += freqTable[wordValue]
+                    else:
+                        sentenceValue[sentence[:10]] = freqTable[wordValue]
 
-def getAverageScore(sentenceValue):
-    sumValues = 0
-    for entry in sentenceValue:
-        sumValues += sentenceValue[entry]
+            sentenceValue[sentence[:10]] = sentenceValue[sentence[:10]] / word_count_in_sentence
 
-    average = int(sumValues / len(sentenceValue))
+        self.sentenceValue = sentenceValue
 
-    return average
 
-threshold = getAverageScore(sentenceScores)
+    def getAverageScore(self, sentenceValue):
+        sumValues = 0
+        for entry in sentenceValue:
+            sumValues += sentenceValue[entry]
 
-def getSummary(sentences, sentenceValue, threshold):
-    sentenceCount = 0
-    summary = ''
+        average = int(sumValues / len(sentenceValue))
 
-    for sentence in sentences:
-        if sentence[:10] in sentenceValue and sentenceValue[sentence[:10]] > (threshold):
-            summary += " " + sentence
-            sentenceCount += 1
+        self.average = average
 
-    return summary
 
-print(getSummary(sentences,sentenceScores, threshold*1.5))
+    def getSummary(self, sentences, sentenceValue, threshold):
+        sentenceCount = 0
+        summary = ''
+
+        for sentence in sentences:
+            if sentence[:10] in sentenceValue and sentenceValue[sentence[:10]] > (threshold):
+                summary += " " + sentence
+                sentenceCount += 1
+
+        self.summary = summary
+
+    def returnSummary(self):
+        return self.summary
+
+a = Summarize("6Af6b_wyiwI",15)
+a.getTranscript()
+a.cleanTranscript()
+a.createFreqTable(a.text)
+a.setSentences(a.text)
+a.scoreSentences(a.sentences,a.freqTable)
+a.getAverageScore(a.sentenceValue)
+a.getSummary(a.sentences,a.sentenceValue,a.average*1.5)
+print(a.returnSummary())
