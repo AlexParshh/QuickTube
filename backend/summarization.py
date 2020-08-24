@@ -19,12 +19,11 @@ class Summarize():
         text = ""
 
         for i in self.transcript:
-            text += i['text']
+            text += (i['text']+" ")
 
-        text = text.replace(".", ". ")
-        text = text.replace(",", ", ")
         text = text.replace("\n", " ")
         text = re.sub(r'\([^)]*\)', '', text)
+        text = text.replace("  ", " ")
         text = text.lower()
 
         self.text = text
@@ -89,17 +88,18 @@ class Summarize():
                 summary += " " + sentence
                 sentenceCount += 1
 
-        self.summary = summary
+        tmp = sent_tokenize(summary)
+
+        tmp = [i.capitalize() for i in tmp]
+        newSummary = ""
+
+        for i in tmp:
+            newSummary += (i+" ")
+
+        newSummary = newSummary[1:]
+        firstLetter = newSummary[0].upper()
+        newSummary = firstLetter + newSummary[1:]
+        self.summary = newSummary
 
     def returnSummary(self):
         return self.summary
-
-a = Summarize("6Af6b_wyiwI",15)
-a.getTranscript()
-a.cleanTranscript()
-a.createFreqTable(a.text)
-a.setSentences(a.text)
-a.scoreSentences(a.sentences,a.freqTable)
-a.getAverageScore(a.sentenceValue)
-a.getSummary(a.sentences,a.sentenceValue,a.average*1.5)
-print(a.returnSummary())

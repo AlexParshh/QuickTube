@@ -25,7 +25,13 @@ var slider = document.getElementById("sentences")
 
 slider.onchange = function(event){
     var output = document.getElementById("sentenceValue")
-    output.innerHTML = slider.value;
+
+    if (slider.value >= 10 && slider.value < 15) {
+      output.innerHTML = "Less Text";
+    } else {
+      output.innerHTML = "More Text";
+    } 
+
 }
 
 sendInfo = async (data) => {
@@ -34,10 +40,22 @@ sendInfo = async (data) => {
     })
 }
 
+function reverser(n) {
+  if (n < 15) {
+    return ((15-n) + 15)
+  } else if (n > 15) {
+    return (15 - (n-15))
+  } else {
+    return 15
+  }
+} 
+
 //fetches video url to send to backend for NLP summarization
 document.getElementById("summarize").addEventListener("click", function () {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    let sentences = slider.value;
+    let sentences = parseInt(slider.value);
+    sentences = reverser(sentences)
+    
     console.log({url:tabs[0].url,sentences:sentences});
     let info = {url:tabs[0].url,sentences:sentences};
     sendInfo(info)
