@@ -36,7 +36,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     case "getTitle":
       let url = location.href;
       let ans = { title: title(), transcript: trans, url: url };
-      console.log(ans);
       sendResponse(ans);
       break;
     case "updateTranscript":

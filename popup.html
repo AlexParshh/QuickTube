@@ -5,28 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>QuickTube</title>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
-  <body>
-    <div id="main" style="width: 300px; text-align: center;">
-      <h1>QuickTube</h1>
+  <body style="background:lightgray">
+    <div id="main" style="background:lightgray;width: 300px; text-align: center;">
 
+      <div style="background:rgb(173,173,173)">
+        <img src = "/headerLogo.png" width="200px" height="70px" alt = "QuickTube" >
+      </div>
+      
+      <h4 style="margin-top: 5px;"><span class="badge badge-primary">Current Video</span></h4>
+      <h5 id="currentVideo"></h5>
+
+      <h4 id = "sentenceAmount"><span class="badge badge-primary">Summary Length</span></h4>
+
+
+      <div style="display: inline-block;">
+        <input id="sentences" type="range" max=20 min=10 value="15"></input>
+        <p style ="display:inline-block;margin-left:30px"id="sentenceValue" class="badge badge-info">More Text</p>
+      </div>
     
 
-      <h3 class="currentvideo">Current video: </h3>
+      <h4 id="summaryTag" style="display:none;margin-top: 5px;"><span class="badge badge-primary">Summary</span></h4>
+      <p style="display:block" id="summarizedText"></p>
 
-      <h3 id="sentenceAmount">Amount of sentences</h3>
 
-      <input id="sentences" type="range" max=20 min=10 value="15"></input>
-      <p id="sentenceValue">More Text</p>
-
-      <p id="summarizedText"></p>
-      <br/>
-
-      <button style="display:block;margin:auto" id="summarize">Summarize</button>
-
-      <img id="loadingImg" style="display:none" src="https://miro.medium.com/max/882/1*9EBHIOzhE1XfMYoKz1JcsQ.gif" alt="Loading" width="150" height="100">
+      <div style = "text-align: center;">
+        <button class = "btn btn-success" style="display:block;margin:auto;margin-bottom:10px" id="summarize">Summarize</button>
+      </div>
+      
+      <img id="loadingImg" style="height:200px;width:200px;display:none" src="https://mir-s3-cdn-cf.behance.net/project_modules/disp/35771931234507.564a1d2403b3a.gif" alt="Loading" width="150" height="100">
     
-      <script src="popupscript.js"></script> 
+      <script src="popupscript.js"></script>
+      
+  
     </div>
 
   </body>

@@ -6,6 +6,7 @@ function checkForSummary(){
   chrome.storage.local.get([k], function(result){
     if (result[k]) {
       document.getElementById("summarizedText").innerHTML = result[k]
+      document.getElementById("summaryTag").style.display = "block"
     } 
   })
 }
@@ -13,7 +14,7 @@ function checkForSummary(){
 chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
   if (tabs[0].url.includes("https://www.youtube.com/watch?v=")) {
     chrome.tabs.sendMessage(tabs[0].id, {type:"getTitle"}, function (response) {
-      document.getElementsByClassName("currentvideo")[0].innerHTML += response.title;
+      document.getElementById("currentVideo").innerHTML += response.title;
       url = response.url;
       checkForSummary();
 
@@ -37,8 +38,12 @@ chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
 axios.interceptors.request.use(function(config){
   let btn = document.getElementById("summarize");
   let load = document.getElementById("loadingImg");
+  let para = document.getElementById("summarizedText");
+
+  document.getElementById("summaryTag").style.display = "none"
 
   btn.style.display = "none"
+  para.style.display = "none"
   load.style.display = "block"
   load.style.margin = "auto"
 
@@ -50,10 +55,15 @@ axios.interceptors.request.use(function(config){
 axios.interceptors.response.use(function(response) {
   let btn = document.getElementById("summarize");
   let load = document.getElementById("loadingImg");
+  let para = document.getElementById("summarizedText");
+  
+  document.getElementById("summaryTag").style.display = "block"
 
-  btn.style.display = "block"
+  btn.style.display = ""
+  para.style.display = "block"
   btn.style.margin = "auto"
   load.style.display = "none"
+  btn.style.marginBottom = "10px"
   return response
 }, function(error) {
   return Promise.reject(error);
@@ -85,6 +95,7 @@ sendInfo = async (data) => {
         console.log(response);
         let result = response.data.summary;
         document.getElementById("summarizedText").innerHTML = result;
+        document.getElementById("summaryTag").style.display = "block"
         storeSummary(result)
     })
 }
