@@ -8,13 +8,6 @@ function title() {
 }
 
 
-function setSummary(summary) {
-  document.getElementsByClassName(
-    "style-scope ytd-video-secondary-info-renderer"
-  )[9].innerText =
-    ("Summary:\n" + summary + "\n");
-}
-
 var trans;
 
 
@@ -37,6 +30,8 @@ transcript = async () => {
 
 transcript();
 
+
+
 //sends title back to popup
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   switch (message.type) {
@@ -49,8 +44,6 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       //if url change must check for transcript again
       transcript();
       break;
-    case "getSummary":
-      setSummary(message.summary)
     default:
       console.error("Unrecognised message: ", message);
   }

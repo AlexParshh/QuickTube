@@ -21,6 +21,32 @@ chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
 })
 
 
+axios.interceptors.request.use(function(config){
+  let btn = document.getElementById("summarize");
+  let load = document.getElementById("loadingImg");
+
+  btn.style.display = "none"
+  load.style.display = "block"
+  load.style.margin = "auto"
+
+  return config
+}, function(error) {
+  return Promise.reject(error);
+})
+
+axios.interceptors.response.use(function(response) {
+  let btn = document.getElementById("summarize");
+  let load = document.getElementById("loadingImg");
+
+  btn.style.display = "block"
+  btn.style.margin = "auto"
+  load.style.display = "none"
+  return response
+}, function(error) {
+  return Promise.reject(error);
+})
+
+
 var slider = document.getElementById("sentences")
 
 slider.onchange = function(event){
@@ -39,10 +65,6 @@ sendInfo = async (data) => {
         console.log(response);
         let result = response.data.summary;
         document.getElementById("summarizedText").innerHTML = result;
-
-        chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
-          chrome.tabs.sendMessage(tabs[0].id, {type:"getSummary", summary:result})
-        })
 
     })
 }
