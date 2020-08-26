@@ -17,6 +17,7 @@
     "default_title": "Summarize Youtube Videos"
   },
   "permissions": [
-    "tabs","storage"
+    "tabs",
+    "storage"
   ]
 }

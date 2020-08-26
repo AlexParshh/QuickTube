@@ -1,8 +1,21 @@
 //when popup loads it sends message to content script to fetch video title
+var url;
+
+function checkForSummary(){
+  let k = url.split("=")[1].slice(0,11);
+  chrome.storage.local.get([k], function(result){
+    if (result[k]) {
+      document.getElementById("summarizedText").innerHTML = result[k]
+    } 
+  })
+}
+
 chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
   if (tabs[0].url.includes("https://www.youtube.com/watch?v=")) {
     chrome.tabs.sendMessage(tabs[0].id, {type:"getTitle"}, function (response) {
       document.getElementsByClassName("currentvideo")[0].innerHTML += response.title;
+      url = response.url;
+      checkForSummary();
 
       if (response.transcript === false) {
         //removing functionality if transcript doesnt exist
@@ -12,7 +25,7 @@ chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
 
         //displaying error message
         document.getElementById("sentenceAmount").innerHTML = "TRANSCRIPT UNAVAILABLE"
-    }
+    } 
 
     })
   } else {
@@ -60,12 +73,19 @@ slider.onchange = function(event){
 
 }
 
+function storeSummary(summary) {
+  let urlKey = url.split("=")[1].slice(0,11);
+  chrome.storage.local.set({[urlKey]:summary}, function() {
+  })
+}
+
+
 sendInfo = async (data) => {
     result = await axios.post("http://localhost:5000/summarize",data).then(response=>{
         console.log(response);
         let result = response.data.summary;
         document.getElementById("summarizedText").innerHTML = result;
-
+        storeSummary(result)
     })
 }
 

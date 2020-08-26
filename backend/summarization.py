@@ -88,7 +88,10 @@ class Summarize():
                     else:
                         sentenceValue[sentence[:10]] = freqTable[wordValue]
 
-            sentenceValue[sentence[:10]] = sentenceValue[sentence[:10]] / word_count_in_sentence
+            if sentence[:10] in sentenceValue:
+                sentenceValue[sentence[:10]] = sentenceValue[sentence[:10]] / word_count_in_sentence
+            else:
+                sentenceValue[sentence[:10]] = 0
 
         self.sentenceValue = sentenceValue
 
