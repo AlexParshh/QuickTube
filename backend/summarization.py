@@ -40,6 +40,7 @@ class Summarize():
             c = pycurl.Curl()
             c.setopt(c.URL, punctURL)
             postfields = "text="+self.text
+            postfields = u' '.encode('utf-8').strip()+postfields.encode('utf-8').strip()
             b = BytesIO()
             c.setopt(c.POSTFIELDS, postfields)
             c.setopt(c.WRITEDATA,b)
