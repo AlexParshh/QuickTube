@@ -1,6 +1,19 @@
 //when popup loads it sends message to content script to fetch video title
 var url;
 
+
+
+//gets user token
+
+function setName() {
+  chrome.runtime.sendMessage({message:"getName"}, function(response) {
+    let name = response.info.given_name;
+    document.getElementById("welcome").innerHTML += (", "+name+"!");
+  })
+}
+
+setName();
+
 function checkForSummary(){
   let k = url.split("=")[1].slice(0,11);
   chrome.storage.local.get([k], function(result){
@@ -25,12 +38,16 @@ chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
         document.getElementById("sentenceValue").remove();
 
         //displaying error message
-        document.getElementById("sentenceAmount").innerHTML = "TRANSCRIPT UNAVAILABLE"
+        document.getElementById("sentenceAmount").innerHTML = "TRANSCRIPT UNAVAILABLE";
+        document.getElementById("sentenceAmount").style = "background-color:lightgray;color:red;margin-top:10px";
+
     } 
 
     })
   } else {
-    document.getElementById("main").innerHTML = "<h1>QuickTube</h1>" + "<h3>Please Navigate to a Youtube Video</h3>"
+    document.getElementById("main").innerHTML = `<div style="background:rgb(173,173,173);margin-bottom: 10px;">
+    <img src = "/headerLogo.png" width="200px" height="70px" alt = "QuickTube" >
+    </div>` + "<h3 style='background-color:lightgray;color:red;margin-top:10px'>Please Navigate to a Youtube Video</h3>"
   }
 })
 

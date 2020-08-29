@@ -19,7 +19,7 @@
   },
   "oauth2": {
     "client_id":"35361425869-i8uar324vrlptb8e52m30mpqa7ctuum7.apps.googleusercontent.com",
-    "scopes":["https://www.googleapis.com/auth/userinfo.email"]
+    "scopes":["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
   },
   "permissions": [
     "tabs",
