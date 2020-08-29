@@ -6,10 +6,11 @@ var userInfo;
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.url) {
     if (changeInfo.url.includes("https://www.youtube.com/watch?v=")) {
-      chrome.tabs.sendMessage(tabId, { type: "updateTranscript" });
+      chrome.tabs.sendMessage(tabId, { type: "updateTranscript", token:userToken});
     }
   }
 });
+
 
 setName = async() => {
     let xhttp = new XMLHttpRequest();
@@ -32,11 +33,16 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
 
             if (Boolean(token)) {
                 userToken = token;
-                console.log(token);
                 chrome.browserAction.setPopup({popup:"popup.html"}, function() {
                     user_signed_in = true;
                 })
+
+                
+                chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
+                    chrome.tabs.sendMessage(tabs[0].id, {type:"updateTranscript", token:userToken})
+                })
                 setName()
+
             }
           });
         sendResponse({message:"close"});
@@ -44,6 +50,10 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
 
     if (request.message === "getName") {
         sendResponse({info: userInfo});
+    }
+
+    if (request.message === "askToken") {
+        sendResponse({token:userToken})
     }
 
 })

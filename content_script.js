@@ -8,30 +8,40 @@ function title() {
 }
 
 var trans;
+var token;
 
+chrome.runtime.sendMessage({message:"askToken"}, function(response){
+  token = response.token;
+})
 
 //checking if video has a valid transcript
 transcript = async () => {
-  if (location.href.includes("https://www.youtube.com/watch?v=")) {
-    let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-      if (xhttp.readyState == XMLHttpRequest.DONE) {
-        trans = Boolean(xhttp.responseText);
-      }
-    };
-    let link =
-      "https://video.google.com/timedtext?lang=en&v=" +
-      location.href.split("=")[1];
-    await xhttp.open("GET", link);
-    xhttp.send(null);
+  if (token) {
+    if (location.href.includes("https://www.youtube.com/watch?v=")) {
+      let xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (xhttp.readyState == XMLHttpRequest.DONE) {
+          trans = JSON.parse(xhttp.responseText);
+          trans = Boolean(trans.items.length)
+        }
+      };
+      let link =
+        "https://www.googleapis.com/youtube/v3/captions?videoId=" +
+        location.href.split("=")[1]+ "&part=id&access_token=" + token;
+      await xhttp.open("GET", link);
+      xhttp.send(null);
+    }
   }
+
 };
+
 
 transcript();
 
 
 //sends title back to popup
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+
   switch (message.type) {
     case "getTitle":
       let url = location.href;
@@ -39,6 +49,7 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
       sendResponse(ans);
       break;
     case "updateTranscript":
+      token = message.token;
       //if url change must check for transcript again
       transcript();
       break;
