@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize, sent_tokenize
 nltk.download('punkt')
+nltk.download('stopwords')
 
 class Summarize():
     def __init__(self,url,sentences):

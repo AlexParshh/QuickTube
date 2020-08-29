@@ -11,7 +11,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   }
 });
 
-
+//gets users name via oauth
 setName = async() => {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
@@ -33,6 +33,7 @@ chrome.runtime.onMessage.addListener((request,sender,sendResponse) => {
 
             if (Boolean(token)) {
                 userToken = token;
+                //if user has successfully logged in then pop up will redirect to summariziation
                 chrome.browserAction.setPopup({popup:"popup.html"}, function() {
                     user_signed_in = true;
                 })

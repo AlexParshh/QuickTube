@@ -1,10 +1,7 @@
 //when popup loads it sends message to content script to fetch video title
 var url;
 
-
-
-//gets user token
-
+//get and sets user name via oauth from backend
 function setName() {
   chrome.runtime.sendMessage({message:"getName"}, function(response) {
     let name = response.info.given_name;
@@ -14,6 +11,8 @@ function setName() {
 
 setName();
 
+
+//checks internal chrome storage if current video has already been summarized
 function checkForSummary(){
   let k = url.split("=")[1].slice(0,11);
   chrome.storage.local.get([k], function(result){
@@ -24,6 +23,8 @@ function checkForSummary(){
   })
 }
 
+
+//gets title of youtube video
 chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
   if (tabs[0].url.includes("https://www.youtube.com/watch?v=")) {
     chrome.tabs.sendMessage(tabs[0].id, {type:"getTitle"}, function (response) {
@@ -51,7 +52,7 @@ chrome.tabs.query({active:true,currentWindow:true}, function(tabs) {
   }
 })
 
-
+//hides summarize button to prevent spam clicking during request processing
 axios.interceptors.request.use(function(config){
   let btn = document.getElementById("summarize");
   let load = document.getElementById("loadingImg");
@@ -106,9 +107,8 @@ function storeSummary(summary) {
   })
 }
 
-
 sendInfo = async (data) => {
-    result = await axios.post("http://localhost:5000/summarize",data).then(response=>{
+    result = await axios.post("https://quicktube-backend.herokuapp.com/summarize",data).then(response=>{
         console.log(response);
         let result = response.data.summary;
         document.getElementById("summarizedText").innerHTML = result;
