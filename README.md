@@ -10,7 +10,7 @@ No more getting sidetracked by eye catching videos, summarize them and get back 
 
 ## How it was made ##
 
-QuickTube was built as a chrome extension to provide a conveniant in-tab experience. The frontend was developped basic javascript, HTML and CSS and Bootstrap. There was no point in using a framework for such a simple frontend. The backend was built using the python web-framework Flask, since the summarization algorithm uses the python NLTK library. The backend was hosted on Heroku.
+QuickTube was built as a chrome extension to provide a conveniant in-tab experience. The frontend was developed with basic javascript, HTML and CSS and Bootstrap. There was no point in using a framework for such a simple frontend. The backend was built using the python web-framework Flask, since the summarization algorithm uses the python NLTK library. The backend was hosted on Heroku.
 
 ## How it works ## 
 
@@ -20,6 +20,7 @@ QuickTube uses several API's to properlly function:
 * The Chrome Storage API was used to store and retrieve summaries from already-summarized videos, to avoid the need to re summarize.
 * The Youtube Data API v3 was used to check if a current video has an available transcript, it was also used to fetch that transcript for summarization.
 * Google Oauth was used to authorize some API's such as the youtube data v3 or the user basic information API.
+* Deep learning punctuation API was used to punctuate auto-generated captions.
 
 ## Usage ##
 
