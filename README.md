@@ -34,7 +34,7 @@ If you would like to try this extension locally, download the code and load it a
 
 ## Try it out ##
 
-Currently pending review in the chrome webstore.
+https://chrome.google.com/webstore/detail/quicktube-youtube-video-s/kcdfmdmdogpfcmbdgafnphllmkloopkd
 
 ## Photos ##
 
